@@ -8,7 +8,7 @@ var inputFile = fs.readFileSync('index.html').toString();
 console.log(inputFile);
 
 app.get('/', function(request, response) {
-  response.send('inputFile');
+  response.send(inputFile);
 });
 
 var port = process.env.PORT || 5000;

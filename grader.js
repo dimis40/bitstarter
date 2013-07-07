@@ -29,6 +29,7 @@ var cheerio = require('cheerio');
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
 var URL_DEFAULT = "http://sheltered-journey-8800.herokuapp.com/";
+var tempfile = "temp.txt";
 
 var assertFileExists = function(infile) {
     var instr = infile.toString();
@@ -39,14 +40,7 @@ var assertFileExists = function(infile) {
     return instr;
 };
 
-var assertUrlExists = function(infile) {
-    var instr = infile.toString();
-    if(!fs.existsSync(instr)) {
-        console.log("%s does not exist. Exiting.", instr);
-        process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code            
-    }
-    return instr;
-};
+
 
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
@@ -87,16 +81,22 @@ if(require.main == module) {
 }else if (FileorUrl == '--url') {
 var apiurl = process.argv[5];
 var result;
-console.log(apiurl);
 rest.get(apiurl).on('complete', function(result) {
   if (result instanceof Error) {
     sys.puts('Error: ' + result.message);
-    this.retry(5000); // try again after 5 sec
+    process.exit(1);
   } else {
-    sys.puts(result);
+   // sys.puts(result);
+    fs.writeFileSync(tempfile, result);
+program
+        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
+        .option('-u, --url <html_file>', 'Path to index.html', tempfile)
+        .parse(process.argv);
+    var checkJson = checkHtmlFile(tempfile, program.checks);
+    var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(outJson);
   }
 });
-console.log(result);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }

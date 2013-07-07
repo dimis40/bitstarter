@@ -1,2 +1,16 @@
 ["h1",
- ".navigation"]
+ ".navigation",
+".logo",
+".thermometer",
+".pitch",
+".blank",
+".about",
+".heading",
+".subheading",
+".video",
+".order",
+".social",
+".section1",
+".section2",
+".faq",
+".footer"]
